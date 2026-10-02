@@ -1,36 +1,43 @@
-import type { FormEvent } from "react";
+import type {FormEvent } from "react";
 import { Alert } from "../../../components/ui/Alert";
 import { TextField } from "../../../components/ui/TextField";
 import { PasswordField } from "../../../components/ui/PasswordField";
 import { Button } from "../../../components/ui/Button";
+import type { LoginCredentials } from "../authTypes";
 
 export interface LoginFormProps {
-  /** Controlled from outside — this component has no auth/validation logic of its own. */
   isLoading?: boolean;
   errorMessage?: string;
   successMessage?: string;
-  onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
+  onSubmit?: (credentials: LoginCredentials) => void;
   onForgotPassword?: () => void;
 }
 
-/**
- * The login form itself: fields, states, submit button.
- * Knows nothing about page layout, logo, or "Don't have an account?" footer —
- * that's LoginPage's job. This component only knows how to BE a login form.
- */
-export function LoginForm({
-  isLoading = false,
-  errorMessage,
-  successMessage,
-  onSubmit,
-  onForgotPassword,
-}: LoginFormProps) {
+const LoginForm = (props: LoginFormProps) => {
+  const {
+    isLoading,
+    errorMessage,
+    successMessage,
+    onSubmit,
+    onForgotPassword
+  } = props;
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const credentials: LoginCredentials = {
+      email: String(formData.get("email") ?? ""),
+      password: String(formData.get("password") ?? ""),
+    };
+
+    onSubmit?.(credentials);
+  };
+
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        onSubmit?.(e);
-      }}
+      onSubmit={handleSubmit}
       noValidate
       className="space-y-5"
     >
@@ -87,3 +94,4 @@ export function LoginForm({
     </form>
   );
 }
+export { LoginForm };
