@@ -405,3 +405,74 @@ interface AuthResponse {
 ## 14. Interview Explanation
 
 > "For the login flow, I keep the form component responsible only for collecting credentials. The page component orchestrates the authentication process by calling a dedicated auth API function. The API layer uses a shared Axios client and normalizes errors through a common error handler. After successful authentication, the user and token are stored in Redux using `setCredentials`, and the user is redirected to the dashboard. This separation keeps UI, API communication, error handling, and global authentication state independent."
+
+# Registration
+
+### Purpose
+
+The registration flow allows a new user to create a TaskFlow account.
+
+### Flow
+
+RegistrationPage
+→ RegisterForm
+→ Client-side validation
+→ authService.register()
+→ Successful registration
+→ Navigate to Login
+
+### Form Fields
+
+- Full name
+- Email
+- Password
+- Confirm password
+
+### Validation
+
+- Full name is required.
+- Email is required.
+- Email format is validated.
+- Password is required.
+- Password must contain at least 8 characters.
+- Confirm password is required.
+- Password and confirm password must match.
+
+### UI States
+
+- Default
+- Validation error
+- Submitting/loading
+
+### Reusable Components
+
+The registration form uses shared UI components:
+
+- TextField
+- PasswordField
+- Button
+- Alert
+- Spinner
+
+Registration-specific logic remains inside `RegisterForm`.
+
+### Service Layer
+
+Registration API communication is separated into:
+
+`authService.register()`
+
+The form does not directly handle API communication.
+
+### Security Considerations
+
+- Password is not logged to the console.
+- Password is not stored in localStorage.
+- Authentication tokens will be handled after backend integration.
+- Client-side validation is for UX and does not replace server-side validation.
+
+### Current Status
+
+Frontend registration flow completed.
+
+Backend/API integration pending.
